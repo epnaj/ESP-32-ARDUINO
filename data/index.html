@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP-WEB-TEST</title>
+    <style>
+        .center {
+            margin-left: 50%;
+            margin-right: 50%;
+            margin: auto;
+            width: 50%;
+            text-align: center;
+          }
+    </style>
+</head>
+<body>
+    <div class="center">
+        INPUT GLOBAL PASSWORD
+        <br>
+        <input type="password" id="GLOBAL_PASSWORD" name="GLOBAL_PASSWORD" size="25" required>
+    </div>
+    <script>
+        async function postData(url = '', data = '') {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "secretHash": data })
+            });
+          
+            return await response.json();
+        }
+
+        function sendHashedPassword(password){
+            console.log(password)
+            postData(window.location.href + "/password", password).then(
+                response => {
+                    console.log('Server response:', response);
+                }
+            ).catch(
+                error => {
+                    console.error('Error:', error);
+                }
+            );
+        }
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);                    
+            const hashBuffer = await crypto.subtle. digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        document.getElementById("GLOBAL_PASSWORD").addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                // sha256(this.value).then( 
+                //    hash => {
+                //        sendHashedPassword(hash)
+                //    }
+                // );
+                console.log(hash(this.value));
+            }
+        });
+
+    </script>
+</body>
+</html>
